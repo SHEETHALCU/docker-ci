@@ -4,7 +4,7 @@ pipeline {
     environment {
         REGISTRY = "localhost:5000"
         IMAGE_NAME = "anil-demo-app"
-        DOCKER = '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe"'
+        DOCKER = '"C:\\Users\\STUDENT\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe"'
     }
 
     stages {
@@ -17,6 +17,7 @@ pipeline {
         stage('2. Application Build & Test') {
             steps {
                 bat 'C:\\Users\\STUDENT\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m py_compile app.py'
+                echo 'Python application compiled successfully'
             }
         }
 
@@ -46,7 +47,7 @@ pipeline {
             echo "Pipeline succeeded! Docker image built and pushed successfully."
         }
         failure {
-            echo "Pipeline failed. Check Console Output for details."
+            echo "Pipeline failed. Check Console Output."
         }
     }
 }
