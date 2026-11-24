@@ -4,6 +4,7 @@ pipeline {
     environment {
         REGISTRY = "localhost:5000"
         IMAGE_NAME = "anil-demo-app"
+        DOCKER = '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe"'
     }
 
     stages {
@@ -19,23 +20,33 @@ pipeline {
             }
         }
 
-        stage('3. Build & Tag Docker Image') {
+        stage('3. Check Docker') {
             steps {
-                bat "docker build -t ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} -t ${REGISTRY}/${IMAGE_NAME}:latest ."
+                bat "${DOCKER} --version"
+                bat "${DOCKER} info"
             }
         }
 
-        stage('4. Push Image to Registry') {
+        stage('4. Build & Tag Docker Image') {
             steps {
-                bat "docker push ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
-                bat "docker push ${REGISTRY}/${IMAGE_NAME}:latest"
+                bat "${DOCKER} build -t ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} -t ${REGISTRY}/${IMAGE_NAME}:latest ."
+            }
+        }
+
+        stage('5. Push Image to Registry') {
+            steps {
+                bat "${DOCKER} push ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
+                bat "${DOCKER} push ${REGISTRY}/${IMAGE_NAME}:latest"
             }
         }
     }
 
     post {
         success {
-            echo "Pipeline succeeded! Image ${REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER} is available locally and in the registry."
+            echo "Pipeline succeeded! Docker image built and pushed successfully."
+        }
+        failure {
+            echo "Pipeline failed. Check Console Output for details."
         }
     }
 }
